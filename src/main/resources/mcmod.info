@@ -1,0 +1,15 @@
+[
+{
+  "modid": "fastlang",
+  "name": "FastLang",
+  "description": "Optimize the loading speed of Minecraft when you switch languages",
+  "version": "${version}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Ichinomiya Shirona"],
+  "credits": "Ichinomiya Shirona",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

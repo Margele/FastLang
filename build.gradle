@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://repo.spongepowered.org/maven" }
+    }
+    dependencies {
+        // Meme
+        classpath(files("gradle/ForgeGradle-2.1.2.jar"))
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "1.0"
+group = "dev.ichinomiya"
+archivesBaseName = "FastLang"
+
+repositories {
+    mavenCentral()
+    maven { url = "https://repo.spongepowered.org/maven" }
+}
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+
+    mappings = "stable_22"
+    makeObfSourceJar = true
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+compileJava.options.encoding = 'UTF-8'
+
+
+dependencies {
+
+}
+
+jar {
+    manifest.attributes("FMLCorePlugin": 'dev.ichinomiya.fastlang.Loader')
+}
+
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version': project.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
