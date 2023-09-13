@@ -9,7 +9,7 @@ public class Container extends DummyModContainer {
         ModMetadata meta = this.getMetadata();
         meta.modId = "fastlang";
         meta.name = "FastLang";
-        meta.version = "1.0";
+        meta.version = "1.1";
         meta.authorList.add("Ichinomiya Shirona");
     }
 }
