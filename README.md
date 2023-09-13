@@ -1,5 +1,5 @@
-# FastLang-1.8.9
+# Fast Lang
 Optimize the loading speed of Minecraft when you switch languages.
 
 
-Tested on Minecraft 1.8.9 & Optifine 1.8.9 HD U H5~M5. Maybe it works on other versions, but I haven't tested it.
+Works on Minecraft 1.8 ~ 1.12.2 & Optifine.
