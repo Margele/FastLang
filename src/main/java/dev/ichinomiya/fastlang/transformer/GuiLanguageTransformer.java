@@ -16,7 +16,6 @@ public class GuiLanguageTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (transformedName.equals("net.minecraft.client.gui.GuiLanguage$List")) {
-            logger.info("Found GuiLanguage$List class!");
             ClassNode classNode = new ClassNode();
             ClassReader classReader = new ClassReader(basicClass);
             classReader.accept(classNode, 0);
@@ -24,19 +23,23 @@ public class GuiLanguageTransformer implements IClassTransformer {
             for (MethodNode method : classNode.methods) {
                 // Locate the method with the signature
                 if (method.desc.equals("(IZII)V")) {
-                    logger.info("Found elementClicked method!");
                     for (int i = 0; i < method.instructions.size(); i++) {
                         AbstractInsnNode instruction = method.instructions.get(i);
-                        if (instruction.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
-                            if (methodInsnNode.desc.equals("()V")) {
-                                logger.info("Injecting!");
-                                method.instructions.insertBefore(instruction, new InsnNode(Opcodes.POP));
-                                method.instructions.insertBefore(instruction, new MethodInsnNode(Opcodes.INVOKESTATIC, this.getClass().getName().replace(".", "/"), "reloadLanguageManager", "()V", false));
-                                method.instructions.remove(instruction);
 
-                                // Only replace the first
-                                break;
+                        if (instruction instanceof MethodInsnNode) {
+                            MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
+                            // Remove Forge resource reload
+                            if (methodInsnNode.owner.equals("net/minecraftforge/fml/client/FMLClientHandler")) {
+                                method.instructions.remove(instruction);
+                            }
+
+                            // Replace Minecraft resource reload
+                            if (instruction.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                if (methodInsnNode.desc.equals("()V")) {
+                                    method.instructions.insertBefore(instruction, new InsnNode(Opcodes.POP));
+                                    method.instructions.insertBefore(instruction, new MethodInsnNode(Opcodes.INVOKESTATIC, this.getClass().getName().replace(".", "/"), "reloadLanguageManager", "()V", false));
+                                    method.instructions.remove(instruction);
+                                }
                             }
                         }
                     }
@@ -73,11 +76,9 @@ public class GuiLanguageTransformer implements IClassTransformer {
             }
 
             if (optifineLangClass == null) {
-                logger.info("Optifine not found!");
                 return;
             }
 
-            logger.info("Optifine found! Reloading...");
             optifineLangClass.getMethod("resourcesReloaded").invoke(null);
         } catch (Exception e) {
             logger.error("Failed to reload Optifine!", e);
